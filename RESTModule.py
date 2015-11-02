@@ -192,7 +192,7 @@ class UserEvent:
 
     #TODO: IVO
     #Delete user from event
-    def DELETE(self):
+    def DELETE(self, json_msg):
 
         # json_msg=web.data()
         # json_decoded = json.loads(json_msg)
@@ -214,7 +214,7 @@ class UserEvent:
 
     #TODO: IVO
     #Get users near event
-    def GET(self):
+    def GET(self, json_msg):
 
         # json_msg=web.data()
         # json_decoded = json.loads(json_msg)
