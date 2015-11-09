@@ -273,33 +273,36 @@ class UserEvent:
 
     #TODO: IVO
     #Get users near event
-    def GET(self, json_msg):
-
+    def GET(self):
         # json_msg=web.data()
         # json_decoded = json.loads(json_msg)
 
         # get event id from johny boy
         # event_id = json_decoded['event_id']
-        event_id = 1
+        event_id = 19
 
         # get event from ivo san
-        rest_url='http://192.168.8.217:4180/api/event/' + event_id + '/'
-        response = requests.GET(rest_url)
+        rest_url = 'http://localhost:8000/api/event/' + str(event_id) + '/'
+        response = requests.get(rest_url)
 
         # get nearest users from ivo san
         event = json.loads(response.text)
-        longitude = event['longitude']
-        latitude = event['latitude']
-        interest = event['interest']
+        result = event['results'][0]
+        longitude = result['location']['coordinates'][0]
+        latitude = result['location']['coordinates'][1]
+        interest = result['interest']['name']
 
         # do the deletingz man
         rest_url='http://localhost:8000/api/user/nearest/'
-        response = requests.GET(rest_url, {'longitude': longitude,
+        response = requests.get(rest_url, {'longitude': longitude,
                                               'latitude': latitude,
                                               'interest': interest})
 
-        response_json={"code": httplib.OK, "reason": "none"}
-        return response_json
+        #print response.text
+
+        #response_json={"code": httplib.OK, "reason": "none"}
+        #return response_json
+        return response.text
 
 class UserNFC:
 
