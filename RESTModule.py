@@ -229,18 +229,77 @@ class UserEvent:
 
     #TODO: IVO
     #Join User to event
-    def POST(self):
-        pass
+    def POST(self, json_msg):
+
+        # json_msg=web.data()
+        # json_decoded = json.loads(json_msg)
+
+        # get user id from joao
+        # user_id = json_decoded['user_id']
+        user_id = 1
+
+        # get event id from johny boy
+        # event_id = json_decoded['event_id']
+        event_id = 1
+
+        # do the joiningz man
+        rest_url='http://192.168.8.217:4180/api/event/attending/' + user_id + '/'
+        response = requests.PUT(rest_url, {'event_id': event_id})
+
+        response_json={"code": httplib.OK, "reason": "none"}
+        return response_json
 
     #TODO: IVO
     #Delete user from event
-    def DELETE(self):
-        pass
+    def DELETE(self, json_msg):
+
+        # json_msg=web.data()
+        # json_decoded = json.loads(json_msg)
+
+        # get user id from joao
+        # user_id = json_decoded['user_id']
+        user_id = 1
+
+        # get event id from johny boy
+        # event_id = json_decoded['event_id']
+        event_id = 1
+
+        # do the deletingz man
+        rest_url='http://192.168.8.217:4180/api/event/attending/' + user_id + '/'
+        response = requests.DELETE(rest_url, {'event_id': event_id})
+
+        response_json={"code": httplib.OK, "reason": "none"}
+        return response_json
 
     #TODO: IVO
     #Get users near event
-    def GET(self):
-        pass
+    def GET(self, json_msg):
+
+        # json_msg=web.data()
+        # json_decoded = json.loads(json_msg)
+
+        # get event id from johny boy
+        # event_id = json_decoded['event_id']
+        event_id = 1
+
+        # get event from ivo san
+        rest_url='http://192.168.8.217:4180/api/event/' + event_id + '/'
+        response = requests.GET(rest_url)
+
+        # get nearest users from ivo san
+        event = json.loads(response.text)
+        longitude = event['longitude']
+        latitude = event['latitude']
+        interest = event['interest']
+
+        # do the deletingz man
+        rest_url='http://localhost:8000/api/user/nearest/'
+        response = requests.GET(rest_url, {'longitude': longitude,
+                                              'latitude': latitude,
+                                              'interest': interest})
+
+        response_json={"code": httplib.OK, "reason": "none"}
+        return response_json
 
 class UserNFC:
 
