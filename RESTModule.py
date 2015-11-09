@@ -246,12 +246,13 @@ class UserEvent:
         rest_url='http://192.168.8.217:4180/api/event/attending/' + user_id + '/'
         response = requests.PUT(rest_url, {'event_id': event_id})
 
+
         response_json={"code": httplib.OK, "reason": "none"}
         return response_json
 
     #TODO: IVO
     #Delete user from event
-    def DELETE(self, json_msg):
+    def DELETE(self):
 
         # json_msg=web.data()
         # json_decoded = json.loads(json_msg)
@@ -262,12 +263,12 @@ class UserEvent:
 
         # get event id from johny boy
         # event_id = json_decoded['event_id']
-        event_id = 1
+        event_id = 19
 
         # do the deletingz man
-        rest_url='http://192.168.8.217:4180/api/event/attending/' + user_id + '/'
-        response = requests.DELETE(rest_url, {'event_id': event_id})
-
+        rest_url='http://localhost:8000/api/event/attending/' + str(user_id) + '/'
+        #response = requests.delete(rest_url, {'event_id': event_id})
+        response = requests.request('DELETE', rest_url, data={'event_id': event_id})
         response_json={"code": httplib.OK, "reason": "none"}
         return response_json
 
