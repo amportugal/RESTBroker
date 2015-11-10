@@ -452,11 +452,11 @@ def joinUserToEvent():
 
     # get event id from johny boy
     # event_id = json_decoded['event_id']
-    event_id = 1
+    event_id = 19
 
     # do the joiningz man
-    rest_url='http://192.168.8.217:4180/api/event/attending/' + user_id + '/'
-    response = requests.PUT(rest_url, {'event_id': event_id})
+    rest_url='http://localhost:8000/api/event/attending/' + str(user_id) + '/'
+    response = requests.request('PUT', rest_url, data={'event_id': event_id})
 
     response_json={"code": httplib.OK, "reason": "none"}
     return response_json
@@ -496,12 +496,12 @@ def deleteUserToEvent():
 
     # get event id from johny boy
     # event_id = json_decoded['event_id']
-    event_id = 1
+    event_id = 19
+
 
     # do the deletingz man
-    rest_url='http://192.168.8.217:4180/api/event/attending/' + user_id + '/'
-    response = requests.DELETE(rest_url, {'event_id': event_id})
-
+    rest_url='http://localhost:8000/api/event/attending/' + str(user_id) + '/'
+    response = requests.request('DELETE', rest_url, data={'event_id': event_id})
     response_json={"code": httplib.OK, "reason": "none"}
     return response_json
 
@@ -532,28 +532,32 @@ def getUsersNearEvent():
 
     # get event id from johny boy
     # event_id = json_decoded['event_id']
-    event_id = 1
+    event_id = 19
+
 
     print event_id
 
     # get event from ivo san
-    rest_url='http://192.168.8.217:4180/api/event/' + event_id + '/'
-    response = requests.GET(rest_url)
+    rest_url='http://localhost:8000/api/event/' + str(event_id) + '/'
+    response = requests.get(rest_url)
+
+
 
     # get nearest users from ivo san
     event = json.loads(response.text)
-    longitude = event['longitude']
-    latitude = event['latitude']
-    interest = event['interest']
+    result = event['results'][0]
+    longitude = result['location']['coordinates'][0]
+    latitude = result['location']['coordinates'][1]
+    interest = result['interest']['name']
 
     # do the deletingz man
     rest_url='http://localhost:8000/api/user/nearest/'
-    response = requests.GET(rest_url, {'longitude': longitude,
+    response = requests.get(rest_url, {'longitude': longitude,
                                           'latitude': latitude,
                                           'interest': interest})
 
-    response_json={"code": httplib.OK, "reason": "none"}
-    return response_json
+    #response_json={"code": httplib.OK, "reason": "none"}
+    return response.text
 
 
 
