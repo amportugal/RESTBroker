@@ -1,12 +1,32 @@
 from flask import Flask, request
+from flasgger import Swagger
 import requests
 import httplib
 import json
 
 app = Flask(__name__)
 
+Swagger(app)
+
 @app.route('/user/', methods=['POST'])
 def registerUser():
+    """
+    Register user
+    Only returs "test"
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
     #Obtain JSON from message
     json_msg=request.data
 
@@ -56,6 +76,23 @@ def registerUser():
 #EditUser
 @app.route('/user/', methods=['PUT'])
 def editUser():
+    """
+    Edit user
+    Only returs "test"
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
     #Obtain JSON from message
     json_msg=request.data
 
@@ -76,6 +113,23 @@ def editUser():
 #Login
 @app.route('/login/', methods=['GET'])
 def login():
+    """
+    User log in
+    Only returs "test"
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
     #Obtain JSON from message
     json_msg=request.data
 
@@ -97,6 +151,23 @@ def login():
 #Create Event
 @app.route('/event/', methods=['POST'])
 def createEvent():
+    """
+    Create event
+    Only returs "test"
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
     #Obtain json message
     json_msg=request.data
 
@@ -139,6 +210,23 @@ def createEvent():
 #Edit Event
 @app.route('/event/', methods=['PUT'])
 def editEvent():
+    """
+    Edit event
+    Only returs "test"
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
     #Obtain json message
     json_msg=request.data()
 
@@ -184,6 +272,23 @@ def editEvent():
 #Delete Event
 @app.route('/event/', methods=['DELETE'])
 def deleteEvent():
+    """
+    Delete event
+    Only returs "test"
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
     #Obtain json message
     json_msg=request.data()
 
@@ -216,11 +321,45 @@ def deleteEvent():
 #Search Event
 @app.route('/event/', methods=['GET'])
 def searchEvent():
+    """
+    Search for event
+    Only returs "test"
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
     pass
 
 #Join User to Event
 @app.route('/joinUserToEvent/', methods=['POST'])
 def joinUserToEvent():
+    """
+    Join user to event
+    Only returs "test"
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
     # json_msg=web.data()
     # json_decoded = json.loads(json_msg)
 
@@ -242,6 +381,23 @@ def joinUserToEvent():
 #Delete User to Event
 @app.route('/deleteUserToEvent/', methods=['DELETE'])
 def deleteUserToEvent():
+    """
+    Delete user to event
+    Only returs "test"
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
     # json_msg=web.data()
     # json_decoded = json.loads(json_msg)
 
@@ -263,6 +419,23 @@ def deleteUserToEvent():
 #Get Users Near Event
 @app.route('/getUsersNearEvent/', methods=['GET'])
 def getUsersNearEvent():
+    """
+    Get users near event
+    Only returs "test"
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
     # json_msg=web.data()
     # json_decoded = json.loads(json_msg)
 
