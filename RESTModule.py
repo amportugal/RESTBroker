@@ -12,7 +12,9 @@ Swagger(app)
 def registerUser():
     """
     Register user
-    Only returs "test"
+    Registers an user.
+    Expects the following JSON:
+
     ---
     tags:
       - User
@@ -78,7 +80,9 @@ def registerUser():
 def editUser():
     """
     Edit user
-    Only returs "test"
+    Edits information of a user.
+    Expects the following JSON:
+
     ---
     tags:
       - User
@@ -115,7 +119,9 @@ def editUser():
 def login():
     """
     User log in
-    Only returs "test"
+    User logs in.
+    Expects the following JSON:
+
     ---
     tags:
       - User
@@ -153,20 +159,26 @@ def login():
 def createEvent():
     """
     Create event
-    Only returs "test"
+    Creates an event.
+    Expects the following JSON:
+
     ---
     tags:
-      - User
+      - Event
     responses:
-      200:
+      201:
         description: A single user item
         schema:
-          id: return_test
+          id: return_json
           properties:
-            result:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '201'
+            reason:
               type: string
-              description: The test
-              default: 'test'
+              description: The reason of a not-created event
+              default: ''
     """
     #Obtain json message
     json_msg=request.data
@@ -212,20 +224,26 @@ def createEvent():
 def editEvent():
     """
     Edit event
-    Only returs "test"
+    Edits an event.
+    Expects the following JSON:
+
     ---
     tags:
-      - User
+      - Event
     responses:
       200:
         description: A single user item
         schema:
-          id: return_test
+          id: return_json
           properties:
-            result:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '200'
+            reason:
               type: string
-              description: The test
-              default: 'test'
+              description: The reason of a not-created event
+              default: ''
     """
     #Obtain json message
     json_msg=request.data()
@@ -274,20 +292,26 @@ def editEvent():
 def deleteEvent():
     """
     Delete event
-    Only returs "test"
+    Delete an event.
+    Expects the following JSON:
+
     ---
     tags:
-      - User
+      - Event
     responses:
       200:
         description: A single user item
         schema:
-          id: return_test
+          id: return_json
           properties:
-            result:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '200'
+            reason:
               type: string
-              description: The test
-              default: 'test'
+              description: The reason of a not-created event
+              default: ''
     """
     #Obtain json message
     json_msg=request.data()
@@ -323,20 +347,26 @@ def deleteEvent():
 def searchEvent():
     """
     Search for event
-    Only returs "test"
+    Searches for an event.
+    Expects the following JSON:
+
     ---
     tags:
-      - User
+      - Event
     responses:
       200:
         description: A single user item
         schema:
-          id: return_test
+          id: return_json
           properties:
-            result:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '200'
+            reason:
               type: string
-              description: The test
-              default: 'test'
+              description: The reason of a not-created event
+              default: ''
     """
     pass
 
@@ -345,20 +375,26 @@ def searchEvent():
 def joinUserToEvent():
     """
     Join user to event
-    Only returs "test"
+    Joins a user to a certain event.
+    Expects the following JSON:
+
     ---
     tags:
-      - User
+      - User on Event
     responses:
       200:
         description: A single user item
         schema:
-          id: return_test
+          id: return_json
           properties:
-            result:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '200'
+            reason:
               type: string
-              description: The test
-              default: 'test'
+              description: The reason of a not-created event
+              default: ''
     """
     # json_msg=web.data()
     # json_decoded = json.loads(json_msg)
@@ -383,20 +419,26 @@ def joinUserToEvent():
 def deleteUserToEvent():
     """
     Delete user to event
-    Only returs "test"
+    Deletes a user from a certain event.
+    Expects the following JSON:
+
     ---
     tags:
-      - User
+      - User on Event
     responses:
       200:
         description: A single user item
         schema:
-          id: return_test
+          id: return_json
           properties:
-            result:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '200'
+            reason:
               type: string
-              description: The test
-              default: 'test'
+              description: The reason of a not-created event
+              default: ''
     """
     # json_msg=web.data()
     # json_decoded = json.loads(json_msg)
@@ -421,10 +463,12 @@ def deleteUserToEvent():
 def getUsersNearEvent():
     """
     Get users near event
-    Only returs "test"
+    Gets all the users near an event and ordered by distance.
+    Expects the following JSON:
+
     ---
     tags:
-      - User
+      - User on Event
     responses:
       200:
         description: A single user item
