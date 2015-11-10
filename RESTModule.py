@@ -421,7 +421,7 @@ def joinUserToEvent():
     """
     Join user to event
     Joins a user to a certain event.
-    Expects the following JSON:
+    Expects user_id, event_id.
 
     ---
     tags:
@@ -465,7 +465,7 @@ def deleteUserToEvent():
     """
     Delete user to event
     Deletes a user from a certain event.
-    Expects the following JSON:
+    Expects: user_id, event_id.
 
     ---
     tags:
@@ -509,7 +509,7 @@ def getUsersNearEvent():
     """
     Get users near event
     Gets all the users near an event and ordered by distance.
-    Expects the following JSON:
+    Expects: event_id.
 
     ---
     tags:
@@ -560,4 +560,4 @@ def getUsersNearEvent():
 
 
 if __name__ == '__main__':
-    app.run(port=8080, host="192.168.8.217")
+    app.run(port=8888, host="192.168.215.85")
