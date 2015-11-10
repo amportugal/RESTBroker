@@ -228,8 +228,7 @@ def createEvent():
     data_to_send = {key: value for (key, value) in (reg_ids.items() + json_decoded.items())}
 
     #Notification
-    #TODO: Localhost to be changed
-    rest_url='http://localhost:8888/sendEventCreateNotification'
+    rest_url='http://localhost:8080/sendEventCreateNotification'
     r = requests.get(url=rest_url, data=json.dumps(data_to_send))
 
     response_json={"code": httplib.CREATED, "reason": "none"}
@@ -312,8 +311,7 @@ def editEvent():
     data_to_send = {key: value for (key, value) in (reg_ids.items() + json_decoded.items())}
 
     #Notification
-    #TODO: Localhost to be changed
-    rest_url='http://localhost:8888/sendEventUpdateNotification'
+    rest_url='http://localhost:8080/sendEventUpdateNotification'
     r = requests.get(url=rest_url, data=json.dumps(data_to_send))
 
     response_json={"code": httplib.OK, "reason": "none"}
@@ -368,7 +366,7 @@ def deleteEvent():
     data_to_send = {key: value for (key, value) in (reg_ids.items() + json_decoded.items())}
 
     #Notification
-    rest_url='http://localhost:8888/sendEventDeletionNotification'
+    rest_url='http://localhost:8080/sendEventDeletionNotification'
     r = requests.get(url=rest_url, data=json.dumps(data_to_send))
 
     response_json={"code": httplib.CREATED, "reason": "none"}
@@ -455,7 +453,7 @@ def joinUserToEvent():
     event_id = 19
 
     # do the joiningz man
-    rest_url='http://localhost:8000/api/event/attending/' + str(user_id) + '/'
+    rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id) + '/'
     response = requests.request('PUT', rest_url, data={'event_id': event_id})
 
     response_json={"code": httplib.OK, "reason": "none"}
@@ -500,7 +498,7 @@ def deleteUserToEvent():
 
 
     # do the deletingz man
-    rest_url='http://localhost:8000/api/event/attending/' + str(user_id) + '/'
+    rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id) + '/'
     response = requests.request('DELETE', rest_url, data={'event_id': event_id})
     response_json={"code": httplib.OK, "reason": "none"}
     return response_json
@@ -538,7 +536,7 @@ def getUsersNearEvent():
     print event_id
 
     # get event from ivo san
-    rest_url='http://localhost:8000/api/event/' + str(event_id) + '/'
+    rest_url='http://192.168.8.217:4180/api/event/' + str(event_id) + '/'
     response = requests.get(rest_url)
 
 
@@ -551,7 +549,7 @@ def getUsersNearEvent():
     interest = result['interest']['name']
 
     # do the deletingz man
-    rest_url='http://localhost:8000/api/user/nearest/'
+    rest_url='http://192.168.8.217:4180/api/user/nearest/'
     response = requests.get(rest_url, {'longitude': longitude,
                                           'latitude': latitude,
                                           'interest': interest})
@@ -562,4 +560,4 @@ def getUsersNearEvent():
 
 
 if __name__ == '__main__':
-    app.run(port=8888, host="192.168.8.217")
+    app.run(port=8080, host="192.168.8.217")
