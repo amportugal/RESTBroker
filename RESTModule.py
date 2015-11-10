@@ -15,6 +15,7 @@ def registerUser():
     Registers an user.
     Expects the following JSON:
 
+
     ---
     tags:
       - User
@@ -161,6 +162,23 @@ def createEvent():
     Create event
     Creates an event.
     Expects the following JSON:
+    {
+        "longitude": 1.234,
+        "latitude": 2.343,
+        "title": "title",
+        "subtitle": "subtitle",
+        "description": "event description",
+        "small_description": "swag",
+        "beginning": "15-03-2004T00:24:00",
+        "end": "15-03-2004T00:24:00", (opcional)
+        "cost": 2, (opcional)
+        "host": 2,
+        "type": False,
+        "min_people": 40,
+        "max_people": 100, (opcional)
+        "interest": "Swag",
+        "image" : "image/event_01.jpg" (opcional)
+    }
 
     ---
     tags:
@@ -225,8 +243,23 @@ def editEvent():
     """
     Edit event
     Edits an event.
+    Expects the id as parameter.
     Expects the following JSON:
-
+    {
+        "longitude": 1.234,
+        "latitude": 2.343,
+        "title": "title",
+        "subtitle": "subtitle",
+        "description": "event description",
+        "small_description": "swag",
+        "beginning": "15-03-2004T00:24:00",
+        "end": "15-03-2004T00:24:00", (opcional)
+        "cost": 2,
+        "type": False,
+        "min_people": 40,
+        "max_people": 100,
+        "interest": "Swag"
+    }
     ---
     tags:
       - Event
@@ -293,7 +326,7 @@ def deleteEvent():
     """
     Delete event
     Delete an event.
-    Expects the following JSON:
+    Expects the id as parameter.
 
     ---
     tags:
@@ -348,7 +381,7 @@ def searchEvent():
     """
     Search for event
     Searches for an event.
-    Expects the following JSON:
+    Expects the id as parameter.
 
     ---
     tags:
@@ -363,10 +396,24 @@ def searchEvent():
               type: integer
               description: The HTTP response code
               default: '200'
-            reason:
+            info:
               type: string
               description: The reason of a not-created event
-              default: ''
+              default: '{
+                    "longitude": 1.234,
+                    "latitude": 2.343,
+                    "title": "title",
+                    "subtitle": "subtitle",
+                    "description": "event description",
+                    "small_description": "swag",
+                    "beginning": "15-03-2004T00:24:00",
+                    "end": "15-03-2004T00:24:00", (opcional)
+                    "cost": 2,
+                    "type": False,
+                    "min_people": 40,
+                    "max_people": 100,
+                    "interest": "Swag"
+                }'
     """
     pass
 
@@ -487,6 +534,8 @@ def getUsersNearEvent():
     # event_id = json_decoded['event_id']
     event_id = 1
 
+    print event_id
+
     # get event from ivo san
     rest_url='http://192.168.8.217:4180/api/event/' + event_id + '/'
     response = requests.GET(rest_url)
@@ -509,4 +558,4 @@ def getUsersNearEvent():
 
 
 if __name__ == '__main__':
-    app.run(port=8888)
+    app.run(port=8888, host="192.168.8.217")
