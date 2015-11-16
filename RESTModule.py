@@ -266,6 +266,7 @@ def createEvent():
     rest_url='http://192.168.8.217:4180/api/user/nearest&limit=' + str(json_decoded['min_people'])
     response = requests.post(rest_url, data=json_get_users)
 
+    print 'here'
     event_id=response.text
 
     #TODO: Extract reg_ids from the json_msg to variable data_to_send
@@ -275,19 +276,21 @@ def createEvent():
 
     #TODO: TILL HERE
 
+    print 'here'
     #static data
     reg_ids={"reg_ids" : ["APA91bFtxXJsZXTG8yHBmjW__PbXJ8NXClnr3p7ioUbR9M2IO1irQWhF30MF94-VBW4ixd4JABl6_mj-4XOvfkSYPupXyL25WIje3V7T7L7lHBeHZRmBYvuLGHLu5wOZy3X3Au8Qs7Z_"]}
 
     data_to_send = {key: value for (key, value) in (reg_ids.items() + json_decoded.items())}
 
+    print 'here'
     #Notification
     rest_url='http://localhost:8080/sendEventCreateNotification'
     r = requests.get(url=rest_url, data=json.dumps(data_to_send))
+    print 'here'
+    response.text={"code": httplib.CREATED, "reason": "none", "event_id": event_id}
+    response.status_code=200
 
-    response_json={"code": httplib.CREATED, "reason": "none", "event_id": event_id}
-
-
-    return response_json
+    return httplib.OK
 
 #Edit Event
 @app.route('/event/', methods=['PUT'])
@@ -505,19 +508,33 @@ def getNearestEvents():
               default: 'e.g. http://pastebin.com/tk0TncXu'
     """
 
+    print 'entrou'
+
     #Obtain event_id
-    user_id=request.data()
+    #user_id=request.data()
+    user_id=3
 
     #Location service: send event creation
-    rest_url='http://192.168.8.217:4180/api/event/nearest' + user_id + '/'
-    response = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+    rest_url='http://0.0.0.0:8000/api/event/nearest/' + str(user_id) + '/?format=json'
+    print rest_url
+    response = requests.get(rest_url)
+    print 'response'
+    print response.text
+
+    print response.status_code
 
     if response.status_code!=httplib.OK:
         return response
 
     response_json={"code": httplib.OK, "reason": "none", "info": response.text}
+    print response_json
 
-    return response_json
+    #return str(response_json)
+    return flask.jsonify(code=httplib.OK,
+                   reason="none",
+                   info=json.loads(response.text))
+
+
 
 #Join User to Event
 @app.route('/joinUserToEvent/', methods=['POST'])
@@ -667,4 +684,4 @@ def getUsersNearEvent():
 
 
 if __name__ == '__main__':
-    app.run(port=8888, host="192.168.215.85")
+    app.run(port=8888, host="localhost")
