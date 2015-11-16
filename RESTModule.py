@@ -217,11 +217,11 @@ def createEvent():
         "beginning": "15-03-2004T00:24:00",
         "end": "15-03-2004T00:24:00", (opcional)
         "cost": 2, (opcional)
-        "host": 2,
-        "type": False,
+        "host": 3,
+        "type": "PUB",
         "min_people": 40,
         "max_people": 100, (opcional)
-        "interest": "Swag",
+        "interest": 2,
         "image" : "image/event_01.jpg" (opcional)
     }
 
@@ -253,6 +253,9 @@ def createEvent():
     #Location service: send event creation
     rest_url='http://192.168.8.217:4180/api/event/'
     response = requests.post(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
+
+    print response.text
+    print response.status_code
 
     #print response.text
     if response.status_code!=httplib.OK:
