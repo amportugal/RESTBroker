@@ -201,7 +201,7 @@ def login():
 
     return response_json
 
-#Create Event
+#Create Event: IT IS DONE, CHANGE STATIC DATA
 @app.route('/event/', methods=['POST'])
 def createEvent():
     """
@@ -209,20 +209,21 @@ def createEvent():
     Creates an event.
     Expects the following JSON:
     {
-        "longitude": 1.234,
-        "latitude": 2.343,
-        "title": "title",
-        "subtitle": "subtitle", (opcional)
-        "description": "event description",
-        "beginning": "15-03-2004T00:24:00",
-        "end": "15-03-2004T00:24:00", (opcional)
-        "cost": 2, (opcional)
-        "host": 3,
-        "type": "PUB",
-        "min_people": 40,
-        "max_people": 100, (opcional)
+        "title": "New Event",
+        "subtitle": "Subtitle of new event",
+        "description": "Description of new event",
         "interest": 2,
-        "image" : "image/event_01.jpg" (opcional)
+        "latitude": 8.99309210,
+        "longitude": 9.3019203,
+        "host": 3,
+        "attending": 3,
+        "beginning": "2015-10-27T15:05:07Z",
+        "end": "2015-10-29T15:05:07Z",
+        "cost": 4,
+        "type": "PUB",
+        "min_people": 2,
+        "max_people": 5,
+        "image": "image/event_01.jpg"
     }
 
     ---
@@ -254,20 +255,15 @@ def createEvent():
     rest_url='http://192.168.8.217:4180/api/event/'
     response = requests.post(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
 
-    print response.text
-    print response.status_code
-
-    #print response.text
     if response.status_code!=httplib.OK:
-        return response
+        return str(response)
+
+    event_id=response.text
 
     json_decoded=json.loads(json_msg)
     json_get_users={"latitude": json_decoded['latitude'], "longitude": json_decoded['longitude'], "interest": json_decoded['interest']}
     rest_url='http://192.168.8.217:4180/api/user/nearest&limit=' + str(json_decoded['min_people'])
     response = requests.post(rest_url, data=json_get_users)
-
-    print 'here'
-    event_id=response.text
 
     #TODO: Extract reg_ids from the json_msg to variable data_to_send
     #json_users=json.loads(response.text)
@@ -276,29 +272,26 @@ def createEvent():
 
     #TODO: TILL HERE
 
-    print 'here'
     #static data
     reg_ids={"reg_ids" : ["APA91bFtxXJsZXTG8yHBmjW__PbXJ8NXClnr3p7ioUbR9M2IO1irQWhF30MF94-VBW4ixd4JABl6_mj-4XOvfkSYPupXyL25WIje3V7T7L7lHBeHZRmBYvuLGHLu5wOZy3X3Au8Qs7Z_"]}
 
     data_to_send = {key: value for (key, value) in (reg_ids.items() + json_decoded.items())}
 
-    print 'here'
     #Notification
     rest_url='http://localhost:8080/sendEventCreateNotification'
+
     r = requests.get(url=rest_url, data=json.dumps(data_to_send))
-    print 'here'
-    response.text={"code": httplib.CREATED, "reason": "none", "event_id": event_id}
-    response.status_code=200
+    response={"code": httplib.CREATED, "reason": "none", "event_id": int(event_id)}
 
-    return httplib.OK
+    return str(response)
 
-#Edit Event
+#Edit Event: IT IS DONE, CHANGE STATIC DATA
 @app.route('/event/', methods=['PUT'])
 def editEvent():
     """
     Edit event
     Edits an event.
-    Expects the event id as parameter.
+    Expects the event id as query parameter.
     Expects the following JSON:
     {
         "longitude": 1.234, (opcional)
@@ -306,13 +299,13 @@ def editEvent():
         "title": "title", (opcional)
         "subtitle": "subtitle", (opcional)
         "description": "event description", (opcional)
-        "beginning": "15-03-2004T00:24:00", (opcional)
-        "end": "15-03-2004T00:24:00", (opcional)
+        "beginning": "2015-10-27T15:05:07Z", (opcional)
+        "end": "2015-10-27T16:05:07Z", (opcional)
         "cost": 2, (opcional)
-        "type": False, (opcional)
+        "type": "PUB", (opcional)
         "min_people": 40, (opcional)
         "max_people": 100, (opcional)
-        "interest": "Swag" (opcional)
+        "interest": 2 (opcional)
     }
     ---
     tags:
@@ -333,22 +326,21 @@ def editEvent():
               default: ''
     """
     #Obtain json message
-    json_msg=request.data()
+    json_msg=request.data
 
-    print json_msg
+    event_id=request.args['event_id']
 
-    #Location service: send event creation
-    rest_url='http://192.168.8.217:4180/api/event/' + "30" + "/"#TODO: json_msg["event_id"]
+    # #Location service: send event creation
+    rest_url='http://192.168.8.217:4180/api/event/' + event_id + "/"
     response = requests.put(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
 
-    print response.status_code
 
     if response.status_code!=httplib.OK:
-        return response
+        return str(response)
 
 
     json_decoded=json.loads(json_msg)
-    rest_url='http://192.168.8.217:4180/api/user/attending/event/' + "30" + "/" #TODO: json_msg["event_id"]
+    rest_url='http://192.168.8.217:4180/api/user/attending/event/' + event_id + "/"
     response = requests.get(rest_url, "")
 
     print response.text
@@ -361,7 +353,7 @@ def editEvent():
     #TODO: TILL HERE
 
     #static data
-    reg_ids={}#={"reg_ids" : ["APA91bFtxXJsZXTG8yHBmjW__PbXJ8NXClnr3p7ioUbR9M2IO1irQWhF30MF94-VBW4ixd4JABl6_mj-4XOvfkSYPupXyL25WIje3V7T7L7lHBeHZRmBYvuLGHLu5wOZy3X3Au8Qs7Z_"]}
+    reg_ids={"reg_ids" : ["APA91bFtxXJsZXTG8yHBmjW__PbXJ8NXClnr3p7ioUbR9M2IO1irQWhF30MF94-VBW4ixd4JABl6_mj-4XOvfkSYPupXyL25WIje3V7T7L7lHBeHZRmBYvuLGHLu5wOZy3X3Au8Qs7Z_"]}
 
     data_to_send = {key: value for (key, value) in (reg_ids.items() + json_decoded.items())}
 
@@ -371,15 +363,15 @@ def editEvent():
 
     response_json={"code": httplib.OK, "reason": "none"}
 
-    return response_json
+    return str(response_json)
 
-#Delete Event
+#Delete Event: IT IS DONE, CHANGE STATIC DATA
 @app.route('/event/', methods=['DELETE'])
 def deleteEvent():
     """
     Delete event
     Delete an event.
-    Expects the event_id as parameter.
+    Expects the event_id as query parameter.
 
     ---
     tags:
@@ -400,7 +392,7 @@ def deleteEvent():
               default: ''
     """
     #Obtain json message
-    event_id=request.data()
+    event_id=request.args['event_id']
 
     #Location service: send event creation
     rest_url='http://192.168.8.217:4180/api/event/' + event_id + "/"
@@ -408,7 +400,7 @@ def deleteEvent():
 
 
     if response.status_code!=httplib.CREATED:
-        return response
+        return str(response)
 
 
     rest_url='http://192.168.8.217:4180/api/user/attending/event/' + event_id + "/"
@@ -425,15 +417,15 @@ def deleteEvent():
 
     response_json={"code": httplib.CREATED, "reason": "none"}
 
-    return response_json
+    return str(response_json)
 
-#Search Event
+#Search Event: IT IS DONE
 @app.route('/event/', methods=['GET'])
 def searchEvent():
     """
     Search for event
     Searches for an event.
-    Expects the id as parameter.
+    Expects the event_id as query parameter.
 
     ---
     tags:
@@ -467,27 +459,32 @@ def searchEvent():
                 }'
     """
     #Obtain event_id
-    event_id=request.data()
+    event_id=request.args['event_id']
 
     #Location service: send event creation
     rest_url='http://192.168.8.217:4180/api/event/' + event_id + '/'
     response = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
     if response.status_code!=httplib.OK:
-        return response
+        return str(response)
 
-    response_json={"code": httplib.OK, "reason": "none", "info": response.text}
+    json_result=json.loads(response.text)
 
-    return response_json
+    if not json_result['results']:
+        response_json={"code": httplib.OK, "reason": "No event has been found", "info": ""}
+    else:
+        response_json={"code": httplib.OK, "reason": "none", "info": response.text}
+
+    return str(response_json)
 
 
-#Get Nearest Events
+#Get Nearest Events: IT IS DONE
 @app.route('/getNearestEvents/', methods=['GET'])
 def getNearestEvents():
     """
     Get Nearest events
     Obtains all the events near the user.
-    Expects the user_id as parameter.
+    Expects the user_id as query parameter.
 
     ---
     tags:
@@ -508,14 +505,13 @@ def getNearestEvents():
               default: 'e.g. http://pastebin.com/tk0TncXu'
     """
 
-    print 'entrou'
 
     #Obtain event_id
-    #user_id=request.data()
-    user_id=3
+    user_id=request.args['user_id']
+    #user_id=3
 
     #Location service: send event creation
-    rest_url='http://0.0.0.0:8000/api/event/nearest/' + str(user_id) + '/?format=json'
+    rest_url='http://192.168.8.217:4180/api/event/nearest/' + str(user_id) + '/?format=json'
     print rest_url
     response = requests.get(rest_url)
     print 'response'
@@ -524,25 +520,25 @@ def getNearestEvents():
     print response.status_code
 
     if response.status_code!=httplib.OK:
-        return response
+        return str(response)
 
     response_json={"code": httplib.OK, "reason": "none", "info": response.text}
-    print response_json
-
-    #return str(response_json)
-    return flask.jsonify(code=httplib.OK,
-                   reason="none",
-                   info=json.loads(response.text))
 
 
+    return str(response_json)
+    #return Flask.jsonify(code=httplib.OK,
+    #               reason="none",
+    #               info=json.loads(response.text))
 
-#Join User to Event
+
+
+#Join User to Event: IT IS DONE
 @app.route('/joinUserToEvent/', methods=['POST'])
 def joinUserToEvent():
     """
     Join user to event
     Joins a user to a certain event.
-    Expects user_id, event_id.
+    Expects user_id and event_id as query parameters.
 
     ---
     tags:
@@ -563,30 +559,32 @@ def joinUserToEvent():
               default: ''
     """
 
-    json_decoded = json.loads(request.data)
-
     # get user id from joao
-    user_id = json_decoded['user_id']
+    user_id = request.args['user_id']
     #user_id = 1
 
     # get event id from johny boy
-    event_id = json_decoded['event_id']
+    event_id = request.args['event_id']
     #event_id = 19
 
     # do the joiningz man
     rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id) + '/'
     response = requests.request('PUT', rest_url, data={'event_id': event_id})
 
-    response_json={"code": httplib.OK, "reason": "none", "info": response.text}
-    return response_json
+    if response.status_code!=httplib.OK:
+        return str(response)
 
-#Delete User to Event
+    response_json={"code": httplib.OK, "reason": "none", "info": response.text}
+
+    return str(response_json)
+
+#Delete User to Event: IT IS DONE
 @app.route('/deleteUserToEvent/', methods=['DELETE'])
 def deleteUserToEvent():
     """
     Delete user to event
     Deletes a user from a certain event.
-    Expects: user_id, event_id.
+    Expects user_id and event_id as query parameters.
 
     ---
     tags:
@@ -610,27 +608,30 @@ def deleteUserToEvent():
     json_decoded = json.loads(request.data)
 
     # get user id from joao
-    user_id = json_decoded['user_id']
-    # user_id = 1
+    user_id = request.args['user_id']
 
     # get event id from johny boy
-    event_id = json_decoded['event_id']
-    #event_id = 19
+    event_id = request.args['event_id']
 
 
     # do the deletingz man
     rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id) + '/'
     response = requests.request('DELETE', rest_url, data={'event_id': event_id})
-    response_json={"code": httplib.OK, "reason": "none", "info" : response.text}
-    return response_json
 
-#Get Users Near Event
+    if response.status_code!=httplib.OK:
+        return str(response)
+
+    response_json={"code": httplib.OK, "reason": "none", "info" : response.text}
+
+    return str(response_json)
+
+#Get Users Near Event: NOT WORKING
 @app.route('/getUsersNearEvent/', methods=['GET'])
 def getUsersNearEvent():
     """
     Get users near event
     Gets all the users near an event and ordered by distance.
-    Expects: event_id.
+    Expects event_id as query parameter.
 
     ---
     tags:
@@ -653,17 +654,15 @@ def getUsersNearEvent():
 
 
     # get event id from johny boy
-    event_id = request.data
-    # event_id = 19
+    event_id = request.args['event_id']
 
-
-    print event_id
 
     # get event from ivo san
     rest_url='http://192.168.8.217:4180/api/event/' + str(event_id) + '/'
     response = requests.get(rest_url)
 
-
+    if response.status_code!=httplib.OK:
+        return str(response)
 
     # get nearest users from ivo san
     event = json.loads(response.text)
@@ -678,10 +677,14 @@ def getUsersNearEvent():
                                           'latitude': latitude,
                                           'interest': interest})
 
+    if response.status_code!=httplib.OK:
+        return str(response)
+
     response_json={"code": httplib.OK, "reason": "none", "info": response.text}
-    return response_json
+
+    return str(response_json)
 
 
 
 if __name__ == '__main__':
-    app.run(port=8888, host="localhost")
+    app.run(port=8888, host="localhost", debug=True)
