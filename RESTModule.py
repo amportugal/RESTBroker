@@ -3,6 +3,7 @@ from flasgger import Swagger
 import requests
 import httplib
 import json
+import flask
 
 app = Flask(__name__)
 
@@ -507,8 +508,8 @@ def getNearestEvents():
 
 
     #Obtain event_id
-    user_id=request.args['user_id']
-    #user_id=3
+    #user_id=request.args['user_id']
+    user_id=3
 
     #Location service: send event creation
     rest_url='http://192.168.215.85:8000/api/event/nearest/' + str(user_id) + '/?format=json'
@@ -522,13 +523,13 @@ def getNearestEvents():
     if response.status_code!=httplib.OK:
         return str(response)
 
-    response_json={"code": httplib.OK, "reason": "none", "info": response.text}
+    #response_json={"code": httplib.OK, "reason": "none", "info": json.loads(str(response.text))}
 
 
-    return str(response_json)
-    #return Flask.jsonify(code=httplib.OK,
-    #               reason="none",
-    #               info=json.loads(response.text))
+    #return str(response_json)
+    return flask.jsonify(code=httplib.OK,
+                   reason="none",
+                   info=json.loads(response.text))
 
 
 
