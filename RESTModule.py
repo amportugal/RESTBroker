@@ -252,10 +252,14 @@ def createEvent():
     #Obtain json message
     json_msg=request.data
 
-    #Location service: send event creation
-    rest_url='http://192.168.8.217:4180/api/event/'
-    response = requests.post(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
+    print request.data
 
+    #Location service: send event creation
+    rest_url='http://192.168.215.85:8000/api/event/'
+    response = requests.post(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
+    
+    print response.status_code
+    #print response.text
     if response.status_code!=httplib.OK:
         return str(response)
 
