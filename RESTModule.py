@@ -262,7 +262,7 @@ def createEvent():
 
     json_decoded=json.loads(json_msg)
     json_get_users={"latitude": json_decoded['latitude'], "longitude": json_decoded['longitude'], "interest": json_decoded['interest']}
-    rest_url='http://192.168.8.217:4180/api/user/nearest&limit=' + str(json_decoded['min_people'])
+    rest_url='http://192.168.215.85:8000/api/user/nearest&limit=' + str(json_decoded['min_people'])
     response = requests.post(rest_url, data=json_get_users)
 
     #TODO: Extract reg_ids from the json_msg to variable data_to_send
@@ -331,7 +331,7 @@ def editEvent():
     event_id=request.args['event_id']
 
     # #Location service: send event creation
-    rest_url='http://192.168.8.217:4180/api/event/' + event_id + "/"
+    rest_url='http://192.168.215.85:8000/api/event/' + event_id + "/"
     response = requests.put(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
 
 
@@ -340,7 +340,7 @@ def editEvent():
 
 
     json_decoded=json.loads(json_msg)
-    rest_url='http://192.168.8.217:4180/api/user/attending/event/' + event_id + "/"
+    rest_url='http://192.168.215.85.8000/api/user/attending/event/' + event_id + "/"
     response = requests.get(rest_url, "")
 
     print response.text
@@ -395,7 +395,7 @@ def deleteEvent():
     event_id=request.args['event_id']
 
     #Location service: send event creation
-    rest_url='http://192.168.8.217:4180/api/event/' + event_id + "/"
+    rest_url='http://192.168.215.85:8000/api/event/' + event_id + "/"
     response = requests.delete(rest_url,  headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
 
@@ -403,7 +403,7 @@ def deleteEvent():
         return str(response)
 
 
-    rest_url='http://192.168.8.217:4180/api/user/attending/event/' + event_id + "/"
+    rest_url='http://192.168.215.85:8000/api/user/attending/event/' + event_id + "/"
     response = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
     # TODO: static data
@@ -462,7 +462,7 @@ def searchEvent():
     event_id=request.args['event_id']
 
     #Location service: send event creation
-    rest_url='http://192.168.8.217:4180/api/event/' + event_id + '/'
+    rest_url='http://192.168.215.85:8000/api/event/' + event_id + '/'
     response = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
     if response.status_code!=httplib.OK:
@@ -511,7 +511,7 @@ def getNearestEvents():
     #user_id=3
 
     #Location service: send event creation
-    rest_url='http://192.168.8.217:4180/api/event/nearest/' + str(user_id) + '/?format=json'
+    rest_url='http://192.168.215.85:8000/api/event/nearest/' + str(user_id) + '/?format=json'
     print rest_url
     response = requests.get(rest_url)
     print 'response'
@@ -568,7 +568,7 @@ def joinUserToEvent():
     #event_id = 19
 
     # do the joiningz man
-    rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id) + '/'
+    rest_url='http://192.168.215.85:8000/api/event/attending/' + str(user_id) + '/'
     response = requests.request('PUT', rest_url, data={'event_id': event_id})
 
     if response.status_code!=httplib.OK:
@@ -615,7 +615,7 @@ def deleteUserToEvent():
 
 
     # do the deletingz man
-    rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id) + '/'
+    rest_url='http://192.168.215.85:8000/api/event/attending/' + str(user_id) + '/'
     response = requests.request('DELETE', rest_url, data={'event_id': event_id})
 
     if response.status_code!=httplib.OK:
@@ -658,7 +658,7 @@ def getUsersNearEvent():
 
 
     # get event from ivo san
-    rest_url='http://192.168.8.217:4180/api/event/' + str(event_id) + '/'
+    rest_url='http://192.168.215.85:8000/api/event/' + str(event_id) + '/'
     response = requests.get(rest_url)
 
     if response.status_code!=httplib.OK:
@@ -687,4 +687,4 @@ def getUsersNearEvent():
 
 
 if __name__ == '__main__':
-    app.run(port=8888, host="localhost", debug=True)
+    app.run(port=8888, host="192.168.215.85", debug=True)
