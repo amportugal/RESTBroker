@@ -662,25 +662,23 @@ def getUsersNearEvent():
     event_id = request.args['event_id']
 
 
-    # get event from ivo san
-    rest_url='http://192.168.215.85:8000/api/event/' + str(event_id) + '/'
-    response = requests.get(rest_url)
-
-    if response.status_code!=httplib.OK:
-        return str(response)
-
-    # get nearest users from ivo san
-    event = json.loads(response.text)
-    result = event['results'][0]
-    longitude = result['location']['coordinates'][0]
-    latitude = result['location']['coordinates'][1]
-    interest = result['interest']['name']
+    # # get event from ivo san
+    # rest_url='http://192.168.215.85:8000/api/event/' + str(event_id) + '/'
+    # response = requests.get(rest_url)
+    #
+    # if response.status_code!=httplib.OK:
+    #     return str(response)
+    #
+    # # get nearest users from ivo san
+    # event = json.loads(response.text)
+    # result = event['results'][0]
+    # longitude = result['location']['coordinates'][0]
+    # latitude = result['location']['coordinates'][1]
+    # interest = result['interest']['name']
 
     # do the deletingz man
-    rest_url='http://192.168.8.217:4180/api/user/nearest/'
-    response = requests.get(rest_url, {'longitude': longitude,
-                                          'latitude': latitude,
-                                          'interest': interest})
+    rest_url='http://192.168.8.217:4180/api/user/nearest/' + str(event_id)
+    response = requests.get(rest_url)
 
     if response.status_code!=httplib.OK:
         return str(response)
