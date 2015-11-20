@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, request
 from flasgger import Swagger
 import requests
@@ -517,12 +518,9 @@ def getNearestEvents():
 
     #Location service: send event creation
     rest_url='http://192.168.215.85:8000/api/event/nearest/' + str(user_id) + '/?format=json'
-    print rest_url
-    response = requests.get(rest_url)
-    print 'response'
-    print response.text
 
-    print response.status_code
+    response = requests.get(rest_url)
+
 
     if response.status_code!=httplib.OK:
         return str(response)
