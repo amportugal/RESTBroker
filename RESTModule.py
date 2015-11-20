@@ -715,7 +715,7 @@ def getUserAttendingEvents():
 
 
     # get event id from johny boy
-    user_id = request.args['user_id']
+    user_id = 3#request.args['user_id']
 
     # do the deletingz man
     rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id)
