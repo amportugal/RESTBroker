@@ -687,6 +687,46 @@ def getUsersNearEvent():
 
     return str(response_json)
 
+@app.route('/getUserAttendingEvents/', methods=['GET'])
+def getUserAttendingEvents():
+    """
+    Get
+    Gets all the events a user attends (even if host)
+    Expects user_id as query parameter.
+
+    ---
+    tags:
+      - User on Event
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '200'
+            info:
+              type: string
+              description: All the users info.
+              default: 'e.g. http://pastebin.com/WUCFmedg'
+    """
+
+
+    # get event id from johny boy
+    user_id = request.args['user_id']
+
+    # do the deletingz man
+    rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id)
+    response = requests.get(rest_url)
+
+    if response.status_code!=httplib.OK:
+        return str(response)
+
+    response_json={"code": httplib.OK, "reason": "none", "info": response.text}
+
+    return str(response_json)
 
 
 if __name__ == '__main__':
