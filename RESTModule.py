@@ -677,7 +677,7 @@ def getUsersNearEvent():
     # interest = result['interest']['name']
 
     # do the deletingz man
-    rest_url='http://192.168.8.217:4180/api/user/nearest/' + str(event_id)
+    rest_url='http://192.168.215.85:8000/api/user/nearest/' + str(event_id)
     response = requests.get(rest_url)
 
     if response.status_code!=httplib.OK:
@@ -718,7 +718,7 @@ def getUserAttendingEvents():
     user_id = 3#request.args['user_id']
 
     # do the deletingz man
-    rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id)
+    rest_url='http://192.168.215.85:8000/api/event/attending/' + str(user_id)
     response = requests.get(rest_url)
 
     if response.status_code!=httplib.OK:
