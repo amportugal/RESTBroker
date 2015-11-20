@@ -724,9 +724,10 @@ def getUserAttendingEvents():
     if response.status_code!=httplib.OK:
         return str(response)
 
-    response_json={"code": httplib.OK, "reason": "none", "info": response.text}
+    return flask.jsonify(code=httplib.OK,
+                   reason="none",
+                   info=json.loads(response.text))
 
-    return str(response_json)
 
 
 if __name__ == '__main__':
