@@ -729,7 +729,7 @@ def getUserAttendingEvents():
 
 
 @app.route('/getUserHostEvents/', methods=['GET'])
-def getUserAttendingEvents():
+def getUserHostEvents():
     """
     Get
     Gets all the events a user hosts
