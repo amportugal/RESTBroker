@@ -58,7 +58,7 @@ def userInfo():
 
     #Location service: GET user
     loc_rest_url='http://192.168.215.85:8000/api/user/' + id
-    response=requests.GET(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
+    response=requests.get(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
 
 
     if response.status_code!=httplib.OK:
@@ -67,13 +67,13 @@ def userInfo():
             loc_rest_url='http://192.168.215.85:8000/api/user/' + id
             code=httplib.OK
             json=flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
-            response=requests.PUT(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
+            response=requests.put(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
             response_json = flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
         else:
             loc_rest_url='http://192.168.215.85:8000/api/user/'
             code=httplib.CREATED
             json=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
-            response=requests.POST(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
+            response=requests.post(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
 
 
     response_json={"code": code, "reason": "none"}
@@ -106,7 +106,7 @@ def loginPage():
 
     #Auth service
     auth_rest_url='http://192.168.8.217:4150/auth/api/users/login'
-    response = requests.GET(auth_rest_url, data='')
+    response = requests.get(auth_rest_url, data='')
 
     if response.status_code!=httplib.OK:
         response_json = {"code": httplib.FORBIDDEN, "reason": "Not Available"}
