@@ -80,6 +80,41 @@ def userInfo():
 
     return response_json
 
+#Login
+@app.route('/login/', methods=['GET'])
+def loginPage():
+    """
+    User log in
+    User logs in.
+    Expects the following JSON:
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            result:
+              type: string
+              description: The test
+              default: 'test'
+    """
+    #Obtain JSON from message
+    json_msg=request.data
+
+    #Auth service
+    auth_rest_url='http://192.168.215.85:5000/auth/api/users/login'
+    response = requests.GET(auth_rest_url, data='')
+
+    if response.status_code!=httplib.OK:
+        response_json = {"code": httplib.FORBIDDEN, "reason": "Not Available"}
+        return response_json
+
+
+    return response.text
+
 #Create Event: IT IS DONE, CHANGE STATIC DATA
 @app.route('/event/', methods=['POST'])
 def createEvent():
