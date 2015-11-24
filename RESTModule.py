@@ -96,10 +96,7 @@ def loginPage():
         schema:
           id: return_test
           properties:
-            result:
-              type: string
-              description: The test
-              default: 'test'
+            an html
     """
 
     return redirect("http://autheserv.ddns.net:4150/auth/api/users/login")
@@ -172,17 +169,19 @@ def createEvent():
     rest_url='http://192.168.215.85:8000/api/user/nearest&limit=' + str(json_decoded['min_people'])
     response = requests.post(rest_url, data=json_get_users)
 
-    #TODO: Extract reg_ids from the json_msg to variable data_to_send
-    #json_users=json.loads(response.text)
+    reg_ids=[]
 
-    #for user in json_users['results']:
+    for user_id in json_get_users['results']:
+        rest_url='http://192.168.215.85:5000/auth/api/users/' + user_id
+        response = requests.get(rest_url, data='')
+        json=json.loads(response.text)
+        reg_id=json['user']['regID']
+        reg_ids+=[reg_id]
 
-    #TODO: TILL HERE
 
-    #static data
-    reg_ids={"reg_ids" : ["APA91bFtxXJsZXTG8yHBmjW__PbXJ8NXClnr3p7ioUbR9M2IO1irQWhF30MF94-VBW4ixd4JABl6_mj-4XOvfkSYPupXyL25WIje3V7T7L7lHBeHZRmBYvuLGHLu5wOZy3X3Au8Qs7Z_"]}
+    reg_ids_json={"reg_ids" : reg_ids}
 
-    data_to_send = {key: value for (key, value) in (reg_ids.items() + json_decoded.items())}
+    data_to_send = {key: value for (key, value) in (reg_ids_json.items() + json_decoded.items())}
 
     #Notification
     rest_url='http://localhost:8080/sendEventCreateNotification'
