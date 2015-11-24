@@ -4,7 +4,7 @@ from flasgger import Swagger
 import requests
 import httplib
 import json
-import flask
+import flask, redirect
 
 app = Flask(__name__)
 
@@ -101,19 +101,8 @@ def loginPage():
               description: The test
               default: 'test'
     """
-    #Obtain JSON from message
-    json_msg=request.data
 
-    #Auth service
-    auth_rest_url='http://192.168.215.85:5000/auth/api/users/login'
-    response = requests.get(auth_rest_url, data='')
-
-    if response.status_code!=httplib.OK:
-        response_json = {"code": httplib.FORBIDDEN, "reason": "Not Available"}
-        return response_json
-
-
-    return response.text
+    return redirect("http://autheserv.ddns.net:4150/auth/api/users/login")
 
 #Create Event: IT IS DONE, CHANGE STATIC DATA
 @app.route('/event/', methods=['POST'])
