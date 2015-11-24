@@ -105,7 +105,7 @@ def loginPage():
     json_msg=request.data
 
     #Auth service
-    auth_rest_url='http://192.168.8.217:4150/auth/api/users/login'
+    auth_rest_url='http://192.168.215.85:5000/auth/api/users/login'
     response = requests.get(auth_rest_url, data='')
 
     if response.status_code!=httplib.OK:
