@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request
+from flask import Flask, request, redirect
 from flasgger import Swagger
 import requests
 import httplib
 import json
-import flask, redirect
+import flask
 
 app = Flask(__name__)
 
