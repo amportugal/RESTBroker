@@ -11,11 +11,17 @@ app = Flask(__name__)
 Swagger(app)
 
 @app.route('/user/', methods=['POST'])
-def registerUser():
+def userInfo():
     """
-    Register user
-    Registers an user.
+    Register or edits an user, if it exists.
     Expects the following JSON:
+
+    {
+        "id": 20,
+        "latitude": 8,
+        "longitude":9,
+        "interests":["swag", "football", "fashion"]
+    }
 
 
     ---
@@ -27,10 +33,14 @@ def registerUser():
         schema:
           id: return_test
           properties:
-            result:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '201'
+            reason:
               type: string
-              description: The test
-              default: 'test'
+              description: The reason of a not-created event
+              default: ''
     """
     #Obtain JSON from message
     json_msg=request.data
@@ -39,165 +49,30 @@ def registerUser():
     json_decoded=json.loads(json_msg)
 
     #build new json message
+    id=json_decoded['id']
     interests=json_decoded['interests']
-    username=json_decoded['username']
     longitude=json_decoded['longitude']
     latitude=json_decoded['latitude']
-    password=json_decoded['hashedPW']
-    timestamp=json_decoded['timestamp']
-
-
-    new_json={"username": username, "hashedPW": password}
-    #Authentication service
-    #TODO: insert url
-    #auth_rest_url=''
-    #response=requests.POST(auth_rest_url, new_json)
 
     #json_decoded=json.loads(response.text)
 
-    #if response.status_code!=httplib.CREATED:
-    #    response_json = {"code": httplib.FORBIDDEN, "reason": json_decoded['reason']}
-    #    return response_json
+    #Location service: GET user
+    loc_rest_url='http://192.168.215.85:8000/api/user/' + id
+    response=requests.GET(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
 
-    new_json={ "id" : username, "longitude" : longitude, "latitude" : latitude, "interests" : interests, "timestamp": timestamp}
-    #Location service
-    loc_rest_url='http://192.168.8.217:4180/api/user'
-    response=requests.POST=(loc_rest_url, new_json)
-
-    json_decoded=json.loads(response.text)
-
-    if response.status_code!=httplib.CREATED:
-        #Delete the previously created username
-        #TODO: insert url
-        auth_rest_url=''
-        response=requests.DELETE(auth_rest_url, {"username" : username})
-        response_json = {"code": httplib.FORBIDDEN, "reason": json_decoded['reason']}
-        return response_json
-
-    response_json={"code": httplib.CREATED, "reason": "none"}
-
-    return response_json
-
-#EditUser
-@app.route('/user/', methods=['PUT'])
-def editUserInfo():
-    """
-    Edit user
-    Edits information of a user.
-    Expects user_id.
-    Expects the following JSON:
-    {
-        "latitude": 9.123
-        "longitude": 8.123
-        "interests": ["futebol", "tetris"]
-    }
-
-    ---
-    tags:
-      - User
-    responses:
-      200:
-        description: A single user item
-        schema:
-          id: return_json
-          properties:
-            code:
-              type: integer
-              description: The HTTP response code
-              default: '200'
-            reason:
-              type: string
-              description: The reason of not updating a user
-              default: ''
-    """
-    #Obtain JSON from message
-    json_msg=request.data
-
-    #Location service
-    loc_rest_url='http://192.168.8.217:4180/api/user/' + json_msg['user_id'] + '/'
-    data = json_msg
-    response = requests.PUT(loc_rest_url, data)
 
     if response.status_code!=httplib.OK:
-        response_json = {"code": httplib.FORBIDDEN, "reason": "Could not update user."}
-        return response_json
+        #If there is user, edit it
+        if int(json_decoded['count'])!=0:
+            loc_rest_url='http://192.168.215.85:8000/api/user/' + id
+            json=flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
+            response=requests.PUT(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
+            response_json = flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
+        else:
+            loc_rest_url='http://192.168.215.85:8000/api/user/'
+            json=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
+            response=requests.POST(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
 
-    response_json = {"code": httplib.OK, "reason": 'none'}
-
-    return response_json
-
-@app.route('/user/', methods=['DELETE'])
-def removeUser():
-    """
-    Delete user
-    Deletes a user.
-    Expects: user_id.
-
-    ---
-    tags:
-      - User
-    responses:
-      200:
-        description: A single user item
-        schema:
-          id: return_test
-          properties:
-            result:
-              type: string
-              description: The test
-              default: 'test'
-    """
-    #Obtain JSON from message
-    json_msg=request.data
-
-    #Location service
-    #TODO: insert url
-    loc_rest_url=''
-    data = json_msg
-    response = requests.PUT(loc_rest_url, data)
-
-    if response.status_code!=httplib.OK:
-        response_json = {"code": httplib.FORBIDDEN, "reason": response.text}
-        return response_json
-
-    response_json = {"code": httplib.OK, "reason": 'none'}
-
-    return response_json
-
-#Login
-@app.route('/login/', methods=['GET'])
-def login():
-    """
-    User log in
-    User logs in.
-    Expects the following JSON:
-
-    ---
-    tags:
-      - User
-    responses:
-      200:
-        description: A single user item
-        schema:
-          id: return_test
-          properties:
-            result:
-              type: string
-              description: The test
-              default: 'test'
-    """
-    #Obtain JSON from message
-    json_msg=request.data
-
-    #Auth service
-    #TODO: insert url
-    auth_rest_url=''
-    data = json_msg
-    response = requests.GET(auth_rest_url, data)
-
-    if response.status_code!=httplib.OK:
-        response_json = {"code": httplib.FORBIDDEN, "reason": response.text}
-        return response_json
 
     response_json={"code": httplib.OK, "reason": "none"}
 
