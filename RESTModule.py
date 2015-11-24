@@ -65,16 +65,18 @@ def userInfo():
         #If there is user, edit it
         if int(json_decoded['count'])!=0:
             loc_rest_url='http://192.168.215.85:8000/api/user/' + id
+            code=httplib.OK
             json=flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
             response=requests.PUT(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
             response_json = flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
         else:
             loc_rest_url='http://192.168.215.85:8000/api/user/'
+            code=httplib.CREATED
             json=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
             response=requests.POST(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
 
 
-    response_json={"code": httplib.OK, "reason": "none"}
+    response_json={"code": code, "reason": "none"}
 
     return response_json
 
