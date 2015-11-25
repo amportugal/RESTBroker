@@ -158,7 +158,7 @@ def createEvent():
     response = requests.post(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
     
     print response.status_code
-    #print response.text
+
     if response.status_code!=httplib.OK:
         return str(response)
 
@@ -590,6 +590,47 @@ def getUserAttendingEvents():
     """
     Get
     Gets all the events a user attends
+    Expects user_id as query parameter.
+
+    ---
+    tags:
+      - User on Event
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '200'
+            info:
+              type: string
+              description: All the users info.
+              default: 'e.g. http://pastebin.com/WUCFmedg'
+    """
+
+
+    # get event id from johny boy
+    user_id = 3#request.args['user_id']
+
+    # do the deletingz man
+    rest_url='http://192.168.215.85:8000/api/event/attending/' + str(user_id)
+    response = requests.get(rest_url)
+
+    if response.status_code!=httplib.OK:
+        return str(response)
+
+    return flask.jsonify(code=httplib.OK,
+                   reason="none",
+                   info=json.loads(response.text))
+
+@app.route('/getUserHostingEvents/', methods=['GET'])
+def getUserHostingEvents():
+    """
+    Get
+    Gets all the events a user attends (even if host)
     Expects user_id as query parameter.
 
     ---

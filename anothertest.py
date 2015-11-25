@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-import json as json
-from flask import Flask, request, redirect
+from flask import Flask, request
 import requests
-import httplib
 import json
-import flask
 
 app = Flask(__name__)
 
@@ -25,4 +22,4 @@ def done():
 
 
 if __name__ == '__main__':
-    app.run(port=8888, host="0.0.0.0", debug=True)
+    app.run(port=8888, host="localhost", debug=True)
