@@ -15,12 +15,12 @@ Swagger(app)
 @app.route('/registerRegId/', methods=['POST'])
 def registerRegId():
     """
-    Register or edits a user, if it exists. Registers a registration id.
+    Registers a registration id.
     Expects the following JSON:
 
     {
-        "user_id": 20,
-        "reg_id": "q3948y1r3hj31315qhjqwghqghvqwhjeqwv_qweqbqerurv3v1u"
+        "id": 20,
+        "regID": "q3948y1r3hj31315qhjqwghqghvqwhjeqwv_qweqbqerurv3v1u"
     }
 
 
@@ -42,6 +42,15 @@ def registerRegId():
               description: The reason of a not-created event
               default: ''
     """
+
+    #Authentication service: Set Reg ID
+    auth_rest_url='http://192.168.215.85:5000/auth/api/users/setRegID'
+    response=requests.post(auth_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=request.data)
+
+    if response.status_code== 
+
+    return flask.jsonify(code=httplib.OK, info=data_to_send)
+
 
   
 
