@@ -47,9 +47,10 @@ def registerRegId():
     auth_rest_url='http://192.168.215.85:5000/auth/api/users/setRegID'
     response=requests.post(auth_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=request.data)
 
-    if response.status_code== 
-
-    return flask.jsonify(code=httplib.OK, info=data_to_send)
+    if response.status_code!=httplib.OK:
+	 return flask.jsonify(code=response.status_code, reason="None")
+    else:	
+	 return flask.jsonify(code=httplib.OK, reason="None")
 
 
   
