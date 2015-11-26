@@ -10,6 +10,41 @@ app = Flask(__name__)
 
 Swagger(app)
 
+
+
+@app.route('/registerRegId/', methods=['POST'])
+def registerRegId():
+    """
+    Register or edits a user, if it exists. Registers a registration id.
+    Expects the following JSON:
+
+    {
+        "user_id": 20,
+        "reg_id": "q3948y1r3hj31315qhjqwghqghvqwhjeqwv_qweqbqerurv3v1u"
+    }
+
+
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '200'
+            reason:
+              type: string
+              description: The reason of a not-created event
+              default: ''
+    """
+
+  
+
 @app.route('/user/', methods=['POST'])
 def userInfo():
     """
