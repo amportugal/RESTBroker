@@ -129,11 +129,11 @@ def getUserInfo():
     user_id=request.args['user_id']
 
     #Location service: GET user
-    loc_rest_url='http://192.168.8.217:4180/api/user/' + user_id
+    loc_rest_url='http://192.168.215.85:8000/api/user/' + user_id
     response_loc=requests.get(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
 
     #Authentication service: GET user
-    auth_rest_url='http://192.168.8.217:4150/auth/api/users/' + user_id
+    auth_rest_url='http://192.168.215.85:5000/auth/api/users/' + user_id
     response_auth=requests.get(auth_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
 
     a_json=json.loads(response_loc.text)
@@ -565,7 +565,7 @@ def joinUserToEvent():
     #event_id = 19
 
     # do the joiningz man
-    rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id) + '/'
+    rest_url='http://192.168.215.85:8000/api/event/attending/' + str(user_id) + '/'
     response = requests.request('PUT', rest_url, data={'event_id': event_id})
 
     if response.status_code!=httplib.OK:
@@ -575,17 +575,17 @@ def joinUserToEvent():
 
 
     #Get event info
-    rest_url='http://192.168.8.217:4180/api/event/' + event_id + '/'
+    rest_url='http://192.168.215.85:8000/api/event/' + event_id + '/'
     response_event = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
     #Notification
-    rest_url='http://192.168.8.217:4180/api/user/host/event/' + event_id + "/"
+    rest_url='http://192.168.215.85:8000/api/user/host/event/' + event_id + "/"
     json_get_users = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
     a_json=json.loads(json_get_users.text)['results']
 
 
-    rest_url='http://192.168.8.217:4150/auth/api/users/' + str(a_json[0]['id'])
+    rest_url='http://192.168.215.85:5000/auth/api/users/' + str(a_json[0]['id'])
     response = requests.get(rest_url, data='')
     response_json=json.loads(response.text)
     reg_id=response_json['user']['regID']
