@@ -13,7 +13,7 @@ Swagger(app)
 @app.route('/user/', methods=['POST'])
 def userInfo():
     """
-    Register or edits an user, if it exists.
+    Register or edits a user, if it exists.
     Expects the following JSON:
 
     {
@@ -61,24 +61,89 @@ def userInfo():
     response=requests.get(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
 
 
-    if response.status_code!=httplib.OK:
-        #If there is user, edit it
-        if int(json_decoded['count'])!=0:
-            loc_rest_url='http://192.168.215.85:8000/api/user/' + id
-            code=httplib.OK
-            json=flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
-            response=requests.put(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
-            response_json = flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
-        else:
-            loc_rest_url='http://192.168.215.85:8000/api/user/'
-            code=httplib.CREATED
-            json=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
-            response=requests.post(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
+    #If there is user, edit it
+    if int(json_decoded['count'])!=0:
+        loc_rest_url='http://192.168.215.85:8000/api/user/' + id
+        code=httplib.OK
+        json=flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
+        response=requests.put(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
+        response_json = flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
+    else:
+        loc_rest_url='http://192.168.215.85:8000/api/user/'
+        code=httplib.CREATED
+        json=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
+        response=requests.post(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
 
 
     response_json={"code": code, "reason": "none"}
 
     return response_json
+
+@app.route('/user/', methods=['GET'])
+def getUserInfo():
+    """
+    Get info about a user, if it exists.
+    Expects user_id as query parameter.
+
+    ---
+    tags:
+      - User
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '201'
+            info:
+              type: string
+              description: JSON with information about the user
+              default: '
+                {
+                    "id": 3,
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            -8.659602999691748,
+                            40.6334416139116
+                        ]
+                    },
+                    "interests": [
+                        {
+                            "id": 2,
+                            "name": "football"
+                        },
+                        {
+                            "id": 1,
+                            "name": "party"
+                        }
+                    ],
+                    "ranking": 0
+                }
+              '
+    """
+    #Obtain JSON from message
+    user_id=request.args['user_id']
+
+    #Location service: GET user
+    loc_rest_url='http://192.168.8.217:4180/api/user/' + user_id
+    response_loc=requests.get(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
+
+    #Authentication service: GET user
+    auth_rest_url='http://192.168.8.217:4150/auth/api/users/' + user_id
+    response_auth=requests.get(auth_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
+
+    a_json=json.loads(response_loc.text)
+    b_json=json.loads(response_auth.text)
+
+    print b_json['user']
+    data_to_send = {key: value for (key, value) in (a_json['results'][0].items() + b_json['user'].items())}
+
+    return flask.jsonify(code=httplib.OK, info=data_to_send)
+
 
 #Login
 @app.route('/login/', methods=['GET'])
@@ -156,8 +221,6 @@ def createEvent():
     #Location service: send event creation
     rest_url='http://192.168.215.85:8000/api/event/'
     response = requests.post(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
-    
-    print response.status_code
 
     if response.status_code!=httplib.OK:
         return str(response)
@@ -165,23 +228,30 @@ def createEvent():
     event_id=response.text
 
     json_decoded=json.loads(json_msg)
-    json_get_users={"latitude": json_decoded['latitude'], "longitude": json_decoded['longitude'], "interest": json_decoded['interest']}
-    rest_url='http://192.168.215.85:8000/api/user/nearest&limit=' + str(json_decoded['min_people'])
-    response = requests.post(rest_url, data=json_get_users)
+    json_to_send={"latitude": json_decoded['latitude'], "longitude": json_decoded['longitude'], "interest": json_decoded['interest']}
+    rest_url='http://192.168.215.85:8000/api/user/nearest/' + event_id + '?limit=' + str(json_decoded['min_people']) #TODO: FALTA O LIMIT
+    json_get_users = requests.get(rest_url, data=json_to_send)
+
+    #Get event info
+    rest_url='http://192.168.215.85:8000/api/event/' + event_id + '/'
+    response_event = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+
+    a_json=json.loads(json_get_users.text)
 
     reg_ids=[]
 
-    for user_id in json_get_users['results']:
-        rest_url='http://192.168.215.85:5000/auth/api/users/' + user_id
+    for user_id in a_json['results']:
+        rest_url='http://192.168.215.85:5000/auth/api/users/' + str(user_id['id'])
         response = requests.get(rest_url, data='')
-        json=json.loads(response.text)
-        reg_id=json['user']['regID']
+        response_json=json.loads(response.text)
+        reg_id=response_json['user']['regID']
         reg_ids+=[reg_id]
 
 
-    reg_ids_json={"reg_ids" : reg_ids}
+    other_info={'event_id' : event_id, 'reg_ids' : reg_ids}
 
-    data_to_send = {key: value for (key, value) in (reg_ids_json.items() + json_decoded.items())}
+    data_to_send = {key: value for (key, value) in (other_info.items() + json.loads(response_event.text).items())}
+
 
     #Notification
     rest_url='http://localhost:8080/sendEventCreateNotification'
@@ -197,7 +267,7 @@ def editEvent():
     """
     Edit event
     Edits an event.
-    Expects the event id as query parameter.
+    Expects the event_id as query parameter.
     Expects the following JSON:
     {
         "longitude": 1.234, (opcional)
@@ -231,37 +301,45 @@ def editEvent():
               description: The reason of a not-created event
               default: ''
     """
+
     #Obtain json message
     json_msg=request.data
 
     event_id=request.args['event_id']
 
-    # #Location service: send event creation
+
+    #Location service: send event creation
     rest_url='http://192.168.215.85:8000/api/event/' + event_id + "/"
     response = requests.put(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
 
-
+    print response.text
     if response.status_code!=httplib.OK:
         return str(response)
 
 
-    json_decoded=json.loads(json_msg)
-    rest_url='http://192.168.215.85.8000/api/user/attending/event/' + event_id + "/"
-    response = requests.get(rest_url, "")
+    rest_url='http://192.168.215.85:8000/api/user/attending/event/' + event_id + "/"
+    json_get_users = requests.get(rest_url, "")
 
-    print response.text
+    #Get event info
+    rest_url='http://192.168.215.85:8000/api/event/' + event_id + '/'
+    response_event = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
-    #TODO: Extract reg_ids from the json_msg to variable data_to_send
-    #json_users=json.loads(response.text)
+    a_json=json.loads(json_get_users.text)
 
-    #for user in json_users['results']:
+    #Initialize
+    reg_ids=[]
 
-    #TODO: TILL HERE
+    for user_id in a_json['results']:
+        rest_url='http://192.168.215.85:5000/auth/api/users/' + str(user_id['id'])
+        response = requests.get(rest_url, data='')
+        response_json=json.loads(response.text)
+        reg_id=response_json['user']['regID']
+        reg_ids+=[reg_id]
 
-    #static data
-    reg_ids={"reg_ids" : ["APA91bFtxXJsZXTG8yHBmjW__PbXJ8NXClnr3p7ioUbR9M2IO1irQWhF30MF94-VBW4ixd4JABl6_mj-4XOvfkSYPupXyL25WIje3V7T7L7lHBeHZRmBYvuLGHLu5wOZy3X3Au8Qs7Z_"]}
+    other_info={'event_id' : event_id, 'reg_ids' : reg_ids}
 
-    data_to_send = {key: value for (key, value) in (reg_ids.items() + json_decoded.items())}
+    data_to_send = {key: value for (key, value) in (other_info.items() + json.loads(response_event.text).items())}
+
 
     #Notification
     rest_url='http://localhost:8080/sendEventUpdateNotification'
@@ -300,22 +378,38 @@ def deleteEvent():
     #Obtain json message
     event_id=request.args['event_id']
 
-    #Location service: send event creation
+    #Get event info
+    rest_url='http://192.168.215.85:8000/api/event/' + event_id + '/'
+    response_event = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+
+    #Location service: send event deletion
     rest_url='http://192.168.215.85:8000/api/event/' + event_id + "/"
     response = requests.delete(rest_url,  headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
 
-    if response.status_code!=httplib.CREATED:
+    if response.status_code!=httplib.OK:
         return str(response)
 
 
     rest_url='http://192.168.215.85:8000/api/user/attending/event/' + event_id + "/"
-    response = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+    json_get_users = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
-    # TODO: static data
-    reg_ids={"reg_ids" : ["APA91bFtxXJsZXTG8yHBmjW__PbXJ8NXClnr3p7ioUbR9M2IO1irQWhF30MF94-VBW4ixd4JABl6_mj-4XOvfkSYPupXyL25WIje3V7T7L7lHBeHZRmBYvuLGHLu5wOZy3X3Au8Qs7Z_"]}
 
-    data_to_send = {key: value for (key, value) in (reg_ids.items() + json_decoded.items())}
+    a_json=json.loads(json_get_users.text)
+
+    #Initialize
+    reg_ids=[]
+
+    for user_id in a_json['results']:
+        rest_url='http://192.168.215.85:5000/auth/api/users/' + str(user_id['id'])
+        response = requests.get(rest_url, data='')
+        response_json=json.loads(response.text)
+        reg_id=response_json['user']['regID']
+        reg_ids+=[reg_id]
+
+    other_info={'event_id' : event_id, 'reg_ids' : reg_ids}
+
+    data_to_send = {key: value for (key, value) in (other_info.items() + json.loads(response_event.text).items())}
 
     #Notification
     rest_url='http://localhost:8080/sendEventDeletionNotification'
@@ -367,7 +461,7 @@ def searchEvent():
     #Obtain event_id
     event_id=request.args['event_id']
 
-    #Location service: send event creation
+    #Location service: get event
     rest_url='http://192.168.215.85:8000/api/event/' + event_id + '/'
     response = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
@@ -471,7 +565,7 @@ def joinUserToEvent():
     #event_id = 19
 
     # do the joiningz man
-    rest_url='http://192.168.215.85:8000/api/event/attending/' + str(user_id) + '/'
+    rest_url='http://192.168.8.217:4180/api/event/attending/' + str(user_id) + '/'
     response = requests.request('PUT', rest_url, data={'event_id': event_id})
 
     if response.status_code!=httplib.OK:
@@ -479,7 +573,32 @@ def joinUserToEvent():
 
     response_json={"code": httplib.OK, "reason": "none", "info": response.text}
 
-    return str(response_json)
+
+    #Get event info
+    rest_url='http://192.168.8.217:4180/api/event/' + event_id + '/'
+    response_event = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+
+    #Notification
+    rest_url='http://192.168.8.217:4180/api/user/host/event/' + event_id + "/"
+    json_get_users = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+
+    a_json=json.loads(json_get_users.text)['results']
+
+
+    rest_url='http://192.168.8.217:4150/auth/api/users/' + str(a_json[0]['id'])
+    response = requests.get(rest_url, data='')
+    response_json=json.loads(response.text)
+    reg_id=response_json['user']['regID']
+
+    other_info={'event_id' : event_id, 'reg_ids' : reg_id, 'new_user': user_id}
+
+    data_to_send = {key: value for (key, value) in (other_info.items() + json.loads(response_event.text).items())}
+
+    #Notification
+    rest_url='http://localhost:8080/sendEventJoinNotification'
+    r = requests.get(url=rest_url, data=json.dumps(data_to_send))
+
+    return flask.jsonify(code=httplib.OK, reason="None")
 
 #Delete User to Event: IT IS DONE
 @app.route('/deleteUserToEvent/', methods=['DELETE'])
@@ -713,4 +832,4 @@ def getUserHostEvents():
 
 
 if __name__ == '__main__':
-    app.run(port=8888, host="192.168.215.85", debug=True)
+    app.run(port=8888, host="localhost", debug=True)
