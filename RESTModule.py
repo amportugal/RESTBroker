@@ -161,7 +161,6 @@ def loginPage():
         schema:
           id: return_test
           properties:
-            an html
     """
 
     return redirect("http://autheserv.ddns.net:4150/auth/api/users/login")
