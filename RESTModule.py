@@ -751,7 +751,7 @@ def getUsersNearEvent():
 @app.route('/getUserAttendingEvents/', methods=['GET'])
 def getUserAttendingEvents():
     """
-    Get
+    Get all the events a user attends
     Gets all the events a user attends
     Expects user_id as query parameter.
 
@@ -792,7 +792,7 @@ def getUserAttendingEvents():
 @app.route('/getUserHostingEvents/', methods=['GET'])
 def getUserHostingEvents():
     """
-    Get
+    Get all the events a user attends
     Gets all the events a user attends (even if host)
     Expects user_id as query parameter.
 
@@ -835,7 +835,7 @@ def getUserHostingEvents():
 @app.route('/getUserHostEvents/', methods=['GET'])
 def getUserHostEvents():
     """
-    Get
+    Get all events a user hosts
     Gets all the events a user hosts
     Expects user_id as query parameter.
 
