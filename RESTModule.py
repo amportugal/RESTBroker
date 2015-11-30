@@ -923,10 +923,8 @@ def getFriendsAttending():
     r = json.loads(response.text)
     re = json.loads(response_event.text)
 
-
     for a in re['results'][0]['attending']:
         attending += [a['id']]
-
     print 'attending', attending
 
     for f in r["friends"]:
@@ -937,8 +935,8 @@ def getFriendsAttending():
             if nfriends >= 3:
                 break
 
-    #if response.status_code!=httplib.OK:
-    #    return str(response)
+#    if response.status_code!=httplib.OK:
+#        return str(response)
 
     return flask.jsonify(code=httplib.OK,
                    reason="none",
@@ -947,4 +945,4 @@ def getFriendsAttending():
 
 
 if __name__ == '__main__':
-    app.run(port=8888, host="localhost", debug=True)
+    app.run(port=8888, host="192.168.215.85", debug=True)
