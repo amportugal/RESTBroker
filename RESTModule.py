@@ -923,17 +923,18 @@ def getFriendsAttending():
     r = json.loads(response.text)
     re = json.loads(response_event.text)
 
-    for a in re['results'][0]['attending']:
-        attending += [a['id']]
-    print 'attending', attending
+    if re['count'] > 0:
+        for a in re['results'][0]['attending']:
+            attending += [a['id']]
+        print 'attending', attending
 
-    for f in r["friends"]:
-        print f['id']
-        if f['id'] in attending:
-            friends += [f]
-            nfriends+=1
-            if nfriends >= 3:
-                break
+        for f in r["friends"]:
+            print f['id']
+            if f['id'] in attending:
+                friends += [f]
+                nfriends+=1
+                if nfriends >= 3:
+                    break
 
 #    if response.status_code!=httplib.OK:
 #        return str(response)
