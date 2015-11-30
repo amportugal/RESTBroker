@@ -771,5 +771,69 @@ def getUserHostEvents():
 
 
 
+
+@app.route('/getFriendsAttending/', methods=['GET'])
+def getFriendsAttending():
+    """
+    Get
+    Gets all the friends of the user that are attending an event
+    Expects user_id and event_id as query parameter.
+
+    ---
+    tags:
+      - User on Event
+    responses:
+      200:
+        description: A single user item
+        schema:
+          id: return_test
+          properties:
+            code:
+              type: integer
+              description: The HTTP response code
+              default: '200'
+            info:
+              type: string
+              description: All the users info.
+              default: 'e.g. http://pastebin.com/WUCFmedg'
+    """
+
+
+    # get event id from johny boy
+    #user_id = 3
+    user_id = request.args['user_id']
+    event_id = request.args['event_id']
+
+    # do the deletingz man
+    rest_url='http://autheserv.ddns.net:4150/auth/api/users/friends/' + str(user_id)
+    response = requests.get(rest_url)
+
+    event_url='http://192.168.8.217:4180/api/event/' + str(event_id)
+    response_event = requests.get(event_url)
+
+    nfriends = 0
+    friends = []
+
+    attending = []
+
+    for a in response_event['results'][0]['attending']:
+        attending += [a['id']]
+
+    for f in response["friends"]:
+        if f['id'] in attending:
+            friends += [f]
+            nfriends+=1
+            if nfriends >= 3:
+                break
+
+    if response.status_code!=httplib.OK:
+        return str(response)
+
+    return flask.jsonify(code=httplib.OK,
+                   reason="none",
+                   info=json.loads(response.text))
+
+
+
 if __name__ == '__main__':
     app.run(port=8888, host="192.168.215.85", debug=True)
