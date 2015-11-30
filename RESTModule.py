@@ -623,24 +623,24 @@ def joinUserToEvent():
     response_event = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
     #Notification
-    rest_url='http://192.168.215.85:8000/api/user/host/event/' + event_id + "/"
-    json_get_users = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+    #rest_url='http://192.168.215.85:8000/api/user/host/event/' + event_id + "/"
+    #json_get_users = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
-    a_json=json.loads(json_get_users.text)['results']
+    #a_json=json.loads(json_get_users.text)['results']
 
 
-    rest_url='http://192.168.215.85:5000/auth/api/users/' + str(a_json[0]['id'])
-    response = requests.get(rest_url, data='')
-    response_json=json.loads(response.text)
-    reg_id=response_json['user']['regID']
+    #rest_url='http://192.168.215.85:5000/auth/api/users/' + str(a_json[0]['id'])
+    #response = requests.get(rest_url, data='')
+    #response_json=json.loads(response.text)
+    #reg_id=response_json['user']['regID']
 
-    other_info={'event_id' : event_id, 'reg_ids' : reg_id, 'new_user': user_id}
+    #other_info={'event_id' : event_id, 'reg_ids' : reg_id, 'new_user': user_id}
 
-    data_to_send = {key: value for (key, value) in (other_info.items() + json.loads(response_event.text).items())}
+    #data_to_send = {key: value for (key, value) in (other_info.items() + json.loads(response_event.text).items())}
 
     #Notification
-    rest_url='http://localhost:8080/sendEventJoinNotification'
-    r = requests.get(url=rest_url, data=json.dumps(data_to_send))
+    #rest_url='http://localhost:8080/sendEventJoinNotification'
+    #r = requests.get(url=rest_url, data=json.dumps(data_to_send))
 
     return flask.jsonify(code=httplib.OK, reason="None")
 
@@ -671,7 +671,7 @@ def deleteUserToEvent():
               default: ''
     """
     # json_msg=web.data()
-    json_decoded = json.loads(request.data)
+    #json_decoded = json.loads(request.data)
 
     # get user id from joao
     user_id = request.args['user_id']
