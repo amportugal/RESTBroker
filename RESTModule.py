@@ -909,10 +909,10 @@ def getFriendsAttending():
     event_id = request.args['event_id']
 
     # do the deletingz man
-    rest_url='http://192.168.8.217:4150/auth/api/users/friends/' + str(user_id)
+    rest_url='http://192.168.215.85:5000/auth/api/users/friends/' + str(user_id)
     response = requests.get(rest_url)
 
-    event_url='http://192.168.8.217:4180/api/event/' + str(event_id)
+    event_url='http://192.168.215.85:8000/api/event/' + str(event_id)
     response_event = requests.get(event_url)
 
     nfriends = 0
