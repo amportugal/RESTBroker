@@ -111,6 +111,8 @@ def userInfo():
     loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
     code=httplib.OK
 
+    print 'oeirpeoir'
+
     request_data_json = json.loads(request.data)
     response=requests.put(loc_rest_url, data=request.data , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
@@ -119,7 +121,6 @@ def userInfo():
     #     code=httplib.CREATED
     #     #data=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
     #     response=requests.post(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
-
 
     return flask.jsonify(code=httplib.OK, reason="None")
 
@@ -550,8 +551,8 @@ def getNearestEvents():
 
 
     #Obtain event_id
-    #user_id=request.args['user_id']
-    user_id=3
+    user_id=request.args['user_id']
+    #user_id=3
 
     #Location service: send event creation
     rest_url='http://192.168.215.85:8000/api/event/nearest/' + str(user_id) + '/?format=json'
@@ -775,7 +776,8 @@ def getUserAttendingEvents():
 
 
     # get event id from johny boy
-    user_id = 3#request.args['user_id']
+    #user_id = 3#
+    request.args['user_id']
 
     # do the deletingz man
     rest_url='http://192.168.215.85:8000/api/event/attending/' + str(user_id)
@@ -816,7 +818,8 @@ def getUserHostingEvents():
 
 
     # get event id from johny boy
-    user_id = 3#request.args['user_id']
+    #user_id = 3#
+    request.args['user_id']
 
     # do the deletingz man
     rest_url='http://192.168.215.85:8000/api/event/attending/' + str(user_id)
