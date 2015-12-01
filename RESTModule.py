@@ -99,11 +99,12 @@ def userInfo():
     longitude=json_decoded['longitude']
     latitude=json_decoded['latitude']
 
-    loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
+    loc_rest_url='http://localhost:8000/api/user/' + str(id) + '/'
 
     data_to_send = json.loads(request.data)
-
-    response=requests.put(loc_rest_url, data=json.dumps(request.data) , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+    print data_to_send
+    print json.dumps(data_to_send)
+    response=requests.put(loc_rest_url, data=json.dumps(data_to_send) , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
     return flask.jsonify(code=httplib.OK, reason="None")
 
