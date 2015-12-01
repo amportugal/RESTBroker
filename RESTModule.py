@@ -257,7 +257,7 @@ def createEvent():
 
     json_decoded=json.loads(json_msg)
     json_to_send={"latitude": json_decoded['latitude'], "longitude": json_decoded['longitude'], "interest": json_decoded['interest']}
-    rest_url='http://192.168.215.85:8000/api/user/nearest/' + event_id + '?limit=' + str(json_decoded['min_people'])
+    rest_url='http://192.168.215.85:8000/api/user/nearest/' + event_id
     json_get_users = requests.get(rest_url, data=json_to_send)
 
     #Get event info
