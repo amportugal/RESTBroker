@@ -109,9 +109,11 @@ def userInfo():
     #response=requests.put(loc_rest_url, data=json.dumps(data_to_send) , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
     if int(response_json['count'])!=0:
+        loc_rest_url='http://localhost:8000/api/user/' + str(id) + '/'
         code=httplib.OK
         response=requests.put(loc_rest_url, data=request.data , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
     else:
+        loc_rest_url='http://localhost:8000/api/user/'
         code=httplib.CREATED
         response=requests.post(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
 
