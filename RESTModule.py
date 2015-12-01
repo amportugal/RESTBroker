@@ -87,9 +87,22 @@ def userInfo():
               description: The reason of a not-created event
               default: ''
     """
+    #Obtain JSON from message
+    json_msg=request.data
+
+    #Decode it
+    json_decoded=json.loads(json_msg)
+
+    #build new json message
+    id=json_decoded['id']
+    interests=json_decoded['interests']
+    longitude=json_decoded['longitude']
+    latitude=json_decoded['latitude']
 
     loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
+
     response=requests.put(loc_rest_url, data=request.data , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+
     return flask.jsonify(code=httplib.OK, reason="None")
 
 @app.route('/user/', methods=['GET'])
@@ -831,7 +844,7 @@ def getUserHostEvents():
 
     # get event id from johny boy
     #user_id = 3#
-    user_id = request.args['user_id']
+    request.args['user_id']
 
     # do the deletingz man
     rest_url='http://192.168.215.85:8000/api/event/host/' + str(user_id)
