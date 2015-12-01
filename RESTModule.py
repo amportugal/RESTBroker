@@ -844,7 +844,7 @@ def getUserHostEvents():
 
     # get event id from johny boy
     #user_id = 3#
-    request.args['user_id']
+    user_id = request.args['user_id']
 
     # do the deletingz man
     rest_url='http://192.168.215.85:8000/api/event/host/' + str(user_id)
