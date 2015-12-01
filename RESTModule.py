@@ -98,31 +98,27 @@ def userInfo():
     interests=json_decoded['interests']
     longitude=json_decoded['longitude']
     latitude=json_decoded['latitude']
-
-    #json_decoded=json.loads(response.text)
-
-    #Location service: GET user
-    loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
-    response=requests.get(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
-    response_json=json.loads(response.text)
+    #
+    # #json_decoded=json.loads(response.text)
+    #
+    # #Location service: GET user
+    # loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
+    # response=requests.get(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
+    # response_json=json.loads(response.text)
 
     #If there is user, edit it
-    if int(response_json['count'])!=0:
-        loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
-        code=httplib.OK
-        #data=flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
-	#print json_msg
-	#print type(request.data)
-        request_data_json = json.loads(request.data)
-	print str(request_data_json)
-        response=requests.put(loc_rest_url, data=request.data , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
-	#print 'aaaanddd' + str(response.status_code)
-	#print loc_rest_url
-    else:
-        loc_rest_url='http://192.168.215.85:8000/api/user/'
-        code=httplib.CREATED
-        #data=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
-        response=requests.post(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
+    #if int(response_json['count'])!=0:
+    loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
+    code=httplib.OK
+
+    request_data_json = json.loads(request.data)
+    response=requests.put(loc_rest_url, data=request.data , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+
+    # else:
+    #     loc_rest_url='http://192.168.215.85:8000/api/user/'
+    #     code=httplib.CREATED
+    #     #data=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
+    #     response=requests.post(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
 
 
     return flask.jsonify(code=httplib.OK, reason="None")
