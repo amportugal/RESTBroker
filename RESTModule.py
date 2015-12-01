@@ -101,7 +101,9 @@ def userInfo():
 
     loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
 
-    response=requests.put(loc_rest_url, data=request.data , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+    data_to_send = json.loads(request.data)
+
+    response=requests.put(loc_rest_url, data=json.dumps(request.data) , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
     return flask.jsonify(code=httplib.OK, reason="None")
 
