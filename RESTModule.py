@@ -87,41 +87,9 @@ def userInfo():
               description: The reason of a not-created event
               default: ''
     """
-    #Obtain JSON from message
-    json_msg=request.data
 
-    #Decode it
-    json_decoded=json.loads(json_msg)
-
-    #build new json message
-    id=json_decoded['id']
-    interests=json_decoded['interests']
-    longitude=json_decoded['longitude']
-    latitude=json_decoded['latitude']
-    #
-    # #json_decoded=json.loads(response.text)
-    #
-    # #Location service: GET user
-    # loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
-    # response=requests.get(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
-    # response_json=json.loads(response.text)
-
-    #If there is user, edit it
-    #if int(response_json['count'])!=0:
     loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
-    code=httplib.OK
-
-    print 'oeirpeoir'
-
-    request_data_json = json.loads(request.data)
     response=requests.put(loc_rest_url, data=request.data , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
-
-    # else:
-    #     loc_rest_url='http://192.168.215.85:8000/api/user/'
-    #     code=httplib.CREATED
-    #     #data=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
-    #     response=requests.post(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
-
     return flask.jsonify(code=httplib.OK, reason="None")
 
 @app.route('/user/', methods=['GET'])
