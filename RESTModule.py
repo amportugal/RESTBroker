@@ -102,27 +102,30 @@ def userInfo():
     #json_decoded=json.loads(response.text)
 
     #Location service: GET user
-    loc_rest_url='http://192.168.215.85:8000/api/user/' + id
+    loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
     response=requests.get(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data='')
-
+    response_json=json.loads(response.text)
 
     #If there is user, edit it
-    if int(json_decoded['count'])!=0:
-        loc_rest_url='http://192.168.215.85:8000/api/user/' + id
+    if int(response_json['count'])!=0:
+        loc_rest_url='http://192.168.215.85:8000/api/user/' + str(id)
         code=httplib.OK
-        json=flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
-        response=requests.put(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
-        response_json = flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
+        #data=flask.jsonify(id=id, longitude=longitude, latitude=latitude, interests=interests)
+	#print json_msg
+	#print type(request.data)
+        request_data_json = json.loads(request.data)
+	print str(request_data_json)
+        response=requests.put(loc_rest_url, data=request.data , headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+	#print 'aaaanddd' + str(response.status_code)
+	#print loc_rest_url
     else:
         loc_rest_url='http://192.168.215.85:8000/api/user/'
         code=httplib.CREATED
-        json=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
-        response=requests.post(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json)
+        #data=flask.jsonify(longitude=longitude, latitude=latitude, interests=interests)
+        response=requests.post(loc_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=json_msg)
 
 
-    response_json={"code": code, "reason": "none"}
-
-    return response_json
+    return flask.jsonify(code=httplib.OK, reason="None")
 
 @app.route('/user/', methods=['GET'])
 def getUserInfo():
