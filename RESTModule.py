@@ -42,8 +42,10 @@ def registerRegId():
               description: The reason of a not-created event
               default: ''
     """
+    json_msg=json.loads(request.data)
 
     #Authentication service: Set Reg ID
+    print json_msg
     auth_rest_url='http://192.168.215.85:5000/auth/api/users/setRegID'
     response=requests.post(auth_rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"}, data=request.data)
 
@@ -89,6 +91,7 @@ def userInfo():
     """
     #Obtain JSON from message
     json_msg=request.data
+    print request.data
 
     #Decode it
     json_decoded=json.loads(json_msg)
@@ -421,6 +424,10 @@ def deleteEvent():
     rest_url='http://192.168.215.85:8000/api/event/' + event_id + '/'
     response_event = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
 
+
+    rest_url='http://192.168.215.85:8000/api/user/attending/event/' + event_id + "/"
+    json_get_users = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
+
     #Location service: send event deletion
     rest_url='http://192.168.215.85:8000/api/event/' + event_id + "/"
     response = requests.delete(rest_url,  headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
@@ -429,17 +436,14 @@ def deleteEvent():
     if response.status_code!=httplib.OK:
         return str(response)
 
-
-    rest_url='http://192.168.215.85:8000/api/user/attending/event/' + event_id + "/"
-    json_get_users = requests.get(rest_url, headers={"X-CSRFToken": "04cAmRuBNouFtoq6ZkXcqq7cVKXiW5rH", "Content-type" : "application/json"})
-
-
+    
     a_json=json.loads(json_get_users.text)
 
     #Initialize
     reg_ids=[]
 
     for user_id in a_json['results']:
+	print "NOW: " + str(user_id)
         rest_url='http://192.168.215.85:5000/auth/api/users/' + str(user_id['id'])
         response = requests.get(rest_url, data='')
         response_json=json.loads(response.text)
@@ -629,7 +633,7 @@ def joinUserToEvent():
     response_json=json.loads(response.text)
     reg_id=response_json['user']['regID']
 
-    other_info={'event_id' : event_id, 'reg_ids' : reg_id, 'new_user': user_id}
+    other_info={'event_id' : event_id, 'reg_ids' : [reg_id], 'new_user': user_id}
 
     data_to_send = {key: value for (key, value) in (other_info.items() + json.loads(response_event.text).items())}
 
